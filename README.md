@@ -172,7 +172,6 @@ MIT License. Built for educational/demo purposes.
 FLASK_ENV=development
 FLASK_DEBUG=True
 STORAGE_TYPE=json  # or mongodb
-MONGODB_URI=mongodb://localhost:27017/threat_intel
 LOG_LEVEL=INFO
 ```
 
@@ -213,7 +212,7 @@ Add enrichment modules in `enrichment/` to:
 
 ## 🚀 Production Deployment
 
-### Docker Deployment
+### Docker Deployment (Not update)
 
 ```bash
 docker build -t threat-intel-pipeline .
@@ -244,8 +243,8 @@ docker run -p 5000:5000 threat-intel-pipeline
 
 For questions or issues:
 - Create an issue on GitHub
-- Check the documentation in `/docs`
-- Review the API documentation at `/api/docs` when running
+- Check the documentation in `/docs` (will update)
+- Review the API documentation at `/api/docs` when running (will update)
 
 ---
 
