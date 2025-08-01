@@ -1,0 +1,62 @@
+2025-08-01 12:32:30,120 - pipeline - INFO - Starting threat intelligence pipeline
+2025-08-01 12:32:30,120 - pipeline - INFO - Step 1: Ingesting threat feeds
+2025-08-01 12:32:30,120 - pipeline - INFO - Fetching blocklist feed...
+2025-08-01 12:32:30,120 - ingestion.fetch_blocklist - INFO - Fetching blocklist feed from http://www.blocklist.de/lists/apache.txt
+2025-08-01 12:32:35,527 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 480: 2001:200:16a:8d::34
+2025-08-01 12:32:35,528 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 481: 2001:470:1:332::3
+2025-08-01 12:32:35,528 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 482: 2001:470:1:332::37
+2025-08-01 12:32:35,528 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 483: 2001:470:1:332::4
+2025-08-01 12:32:35,529 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 484: 2001:470:1:332::6
+2025-08-01 12:32:35,529 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 485: 2001:470:1:c84::15
+2025-08-01 12:32:35,529 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 486: 2001:470:1:c84::19
+2025-08-01 12:32:35,529 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 487: 2001:470:1:fb5::1a0
+2025-08-01 12:32:35,529 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 488: 2001:470:1:fb5::260
+2025-08-01 12:32:35,529 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 489: 2001:470:1:fb5::2a0
+2025-08-01 12:32:35,530 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 490: 2001:470:1:fb5::2c0
+2025-08-01 12:32:35,530 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 491: 2001:470:1:fb5:e31d:f0eb:f138:38c0
+2025-08-01 12:32:35,530 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 541: 2602:80d:1000::1e
+2025-08-01 12:32:35,530 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 542: 2602:80d:1000::2a
+2025-08-01 12:32:35,530 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 543: 2602:80d:1000::40
+2025-08-01 12:32:35,530 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 544: 2602:80d:1000::57
+2025-08-01 12:32:35,531 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 545: 2602:80d:1006::14
+2025-08-01 12:32:35,531 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 546: 2602:fa59:10:70d::1
+2025-08-01 12:32:35,531 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 547: 2602:fa59:9:64c::1
+2025-08-01 12:32:35,531 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 548: 2604:a880:400:d1:0:2:8fc9:3001
+2025-08-01 12:32:35,531 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 549: 2605:ba00:a22f:f1fc:cde0:756b:8770:7ba8
+2025-08-01 12:32:35,532 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 550: 2620:96:e000::d6
+2025-08-01 12:32:35,532 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 551: 2620:96:e000::db
+2025-08-01 12:32:35,532 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 552: 2800:200:e8f0:34f:140:4394:ad54:9a5b
+2025-08-01 12:32:35,532 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 553: 2a01:7c8:bb0b:2ce:5054:ff:feed:5715
+2025-08-01 12:32:35,532 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 554: 2a02:6ea0:e011:1::51ac
+2025-08-01 12:32:35,533 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 555: 2a02:c207:2019:4610::1
+2025-08-01 12:32:35,533 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 556: 2a03:2880:13ff:2::
+2025-08-01 12:32:35,533 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 557: 2a03:2880:13ff:74::
+2025-08-01 12:32:35,533 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 558: 2a03:2880:13ff:7::
+2025-08-01 12:32:35,533 - ingestion.fetch_blocklist - WARNING - Invalid IP format in blocklist feed line 559: 2a0e:7b85:997e:1f2:3f34:6d1a:6648:c87f
+2025-08-01 12:32:35,556 - ingestion.fetch_blocklist - INFO - Successfully parsed 8899 IPs from blocklist feed
+2025-08-01 12:32:35,557 - pipeline - INFO - Fetched 8899 IOCs from blocklist
+2025-08-01 12:32:35,557 - pipeline - INFO - Fetching spamhaus feed...
+2025-08-01 12:32:35,557 - ingestion.fetch_spamhaus - INFO - Fetching Spamhaus feed from http://www.spamhaus.org/drop/drop.txt
+2025-08-01 12:32:36,380 - ingestion.fetch_spamhaus - INFO - Successfully parsed 1577 CIDR blocks from Spamhaus feed
+2025-08-01 12:32:36,382 - pipeline - INFO - Fetched 1577 IOCs from spamhaus
+2025-08-01 12:32:36,382 - pipeline - INFO - Fetching digitalside feed...
+2025-08-01 12:32:36,382 - ingestion.fetch_digitalside - INFO - Fetching DigitalSide feed from https://osint.digitalside.it/Threat-Intel/lists/latesturls.txt
+2025-08-01 12:32:57,748 - ingestion.fetch_digitalside - ERROR - Error fetching DigitalSide feed: HTTPSConnectionPool(host='osint.digitalside.it', port=443): Max retries exceeded with url: /Threat-Intel/lists/latesturls.txt (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x000002A82C207160>, 'Connection to osint.digitalside.it timed out. (connect timeout=30)'))
+2025-08-01 12:32:57,749 - pipeline - ERROR - Failed to fetch digitalside feed: HTTPSConnectionPool(host='osint.digitalside.it', port=443): Max retries exceeded with url: /Threat-Intel/lists/latesturls.txt (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x000002A82C207160>, 'Connection to osint.digitalside.it timed out. (connect timeout=30)'))
+2025-08-01 12:32:57,750 - pipeline - INFO - Total raw IOCs ingested: 10476
+2025-08-01 12:32:57,750 - pipeline - INFO - Step 2: Normalizing IOCs
+2025-08-01 12:32:57,800 - ingestion.normalize - INFO - Normalized 10476 IOCs from 10476 raw entries
+2025-08-01 12:32:57,800 - pipeline - INFO - Normalized 10476 IOCs
+2025-08-01 12:32:57,800 - pipeline - INFO - Step 3: Deduplicating IOCs
+2025-08-01 12:32:57,803 - enrichment.deduplicate - INFO - Deduplication: removed 0 duplicates, kept 10476 unique IOCs
+2025-08-01 12:32:57,804 - pipeline - INFO - After deduplication: 10476 unique IOCs
+2025-08-01 12:32:57,804 - pipeline - INFO - Step 4: Enriching IOCs
+2025-08-01 12:32:57,804 - pipeline - INFO - Enriching IP addresses...
+2025-08-01 13:45:30,566 - pipeline - INFO - Filtering URLs...
+2025-08-01 13:45:30,599 - enrichment.filter_urls - INFO - URL filtering: kept 0 URLs out of 0
+2025-08-01 13:45:30,599 - pipeline - INFO - Applying ML classification...
+2025-08-01 13:45:30,606 - enrichment.ml_classifier - INFO - ML classification applied to 0 URLs
+2025-08-01 13:45:30,607 - pipeline - INFO - Step 5: Saving processed IOCs
+2025-08-01 13:45:31,341 - storage.save_data - INFO - Successfully saved 10476 IOCs to data\processed_iocs.json
+2025-08-01 13:45:31,343 - pipeline - INFO - Pipeline completed successfully in 4380.49 seconds
+2025-08-01 13:45:31,343 - pipeline - INFO - Processed 10476 final IOCs

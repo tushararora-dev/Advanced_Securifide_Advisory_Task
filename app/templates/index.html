@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threat Intelligence Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; text-align: center; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.1em; opacity: 0.9; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
+        .stat-number { font-size: 2.5em; font-weight: bold; color: #667eea; margin-bottom: 5px; }
+        .stat-label { font-size: 1.1em; color: #666; }
+        
+        .controls { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .controls h3 { margin-bottom: 20px; color: #333; }
+        .filter-group { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filter-group select, .filter-group input { padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+        .btn { background: #667eea; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; transition: background 0.3s; }
+        .btn:hover { background: #5a6fd8; }
+        .btn-refresh { background: #28a745; }
+        .btn-refresh:hover { background: #218838; }
+        
+        .results { background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .results-header { padding: 20px; border-bottom: 1px solid #eee; }
+        .results-content { max-height: 600px; overflow-y: auto; }
+        .ioc-item { padding: 15px 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+        .ioc-item:hover { background: #f8f9fa; }
+        .ioc-value { font-family: monospace; font-weight: bold; color: #333; }
+        .ioc-meta { display: flex; gap: 10px; align-items: center; }
+        .badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .badge-ip { background: #e3f2fd; color: #1976d2; }
+        .badge-url { background: #f3e5f5; color: #7b1fa2; }
+        .badge-blocklist { background: #fff3e0; color: #f57c00; }
+        .badge-spamhaus { background: #e8f5e8; color: #388e3c; }
+        .badge-digitalside { background: #fce4ec; color: #c2185b; }
+        .confidence { font-weight: bold; }
+        .confidence-high { color: #4caf50; }
+        .confidence-medium { color: #ff9800; }
+        .confidence-low { color: #f44336; }
+        
+        .loading { text-align: center; padding: 40px; color: #666; }
+        .error { background: #ffebee; color: #c62828; padding: 15px; border-radius: 5px; margin: 10px 0; }
+        .success { background: #e8f5e8; color: #2e7d32; padding: 15px; border-radius: 5px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Threat Intelligence Dashboard</h1>
+            <p>Real-time monitoring and analysis of cybersecurity threat indicators</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalIOCs">-</div>
+                <div class="stat-label">Total IOCs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="ipCount">-</div>
+                <div class="stat-label">IP Addresses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="urlCount">-</div>
+                <div class="stat-label">URLs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="lastUpdated">-</div>
+                <div class="stat-label">Last Updated</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <h3>Filter & Controls</h3>
+            <div class="filter-group">
+                <select id="typeFilter">
+                    <option value="">All Types</option>
+                    <option value="ip">IP Addresses</option>
+                    <option value="url">URLs</option>
+                </select>
+                <select id="sourceFilter">
+                    <option value="">All Sources</option>
+                    <option value="blocklist">Blocklist.de</option>
+                    <option value="spamhaus">Spamhaus</option>
+                    <option value="digitalside">DigitalSide</option>
+                </select>
+                <button class="btn" onclick="loadIOCs()">Apply Filters</button>
+                <button class="btn btn-refresh" onclick="refreshData()">Refresh Data</button>
+            </div>
+            <div id="messages"></div>
+        </div>
+        
+        <div class="results">
+            <div class="results-header">
+                <h3>Threat Indicators (<span id="resultCount">0</span>)</h3>
+            </div>
+            <div class="results-content" id="iocsContainer">
+                <div class="loading">Loading threat indicators...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentData = [];
+        
+        async function loadStats() {
+            try {
+                const response = await fetch('/iocs');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('totalIOCs').textContent = data.count.toLocaleString();
+                    
+                    // Count by type
+                    const ipCount = data.data.filter(ioc => ioc.type === 'ip').length;
+                    const urlCount = data.data.filter(ioc => ioc.type === 'url').length;
+                    
+                    document.getElementById('ipCount').textContent = ipCount.toLocaleString();
+                    document.getElementById('urlCount').textContent = urlCount.toLocaleString();
+                    
+                    // Last updated
+                    if (data.data.length > 0) {
+                        const lastUpdated = new Date(data.data[0].last_updated);
+                        document.getElementById('lastUpdated').textContent = lastUpdated.toLocaleDateString();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+        
+        async function loadIOCs() {
+            const typeFilter = document.getElementById('typeFilter').value;
+            const sourceFilter = document.getElementById('sourceFilter').value;
+            
+            let url = '/iocs?';
+            if (typeFilter) url += `type=${typeFilter}&`;
+            if (sourceFilter) url += `source=${sourceFilter}&`;
+            
+            try {
+                document.getElementById('iocsContainer').innerHTML = '<div class="loading">Loading...</div>';
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentData = data.data;
+                    displayIOCs(data.data.slice(0, 100)); // Show first 100
+                    document.getElementById('resultCount').textContent = data.count.toLocaleString();
+                } else {
+                    showMessage('Error loading IOCs: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showMessage('Network error: ' + error.message, 'error');
+            }
+        }
+        
+        function displayIOCs(iocs) {
+            const container = document.getElementById('iocsContainer');
+            
+            if (iocs.length === 0) {
+                container.innerHTML = '<div class="loading">No threat indicators found</div>';
+                return;
+            }
+            
+            container.innerHTML = iocs.map(ioc => {
+                const confidence = parseFloat(ioc.confidence || 0);
+                let confidenceClass = 'confidence-low';
+                if (confidence > 0.8) confidenceClass = 'confidence-high';
+                else if (confidence > 0.5) confidenceClass = 'confidence-medium';
+                
+                return `
+                    <div class="ioc-item">
+                        <div>
+                            <div class="ioc-value">${escapeHtml(ioc.value)}</div>
+                            <div style="font-size: 12px; color: #666; margin-top: 4px;">
+                                ID: ${ioc.id}
+                            </div>
+                        </div>
+                        <div class="ioc-meta">
+                            <span class="badge badge-${ioc.type}">${ioc.type.toUpperCase()}</span>
+                            <span class="badge badge-${ioc.source}">${ioc.source}</span>
+                            <span class="confidence ${confidenceClass}">${(confidence * 100).toFixed(0)}%</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        async function refreshData() {
+            try {
+                showMessage('Refreshing threat data...', 'info');
+                const response = await fetch('/refresh', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage(`Successfully refreshed ${data.processed_count} IOCs`, 'success');
+                    await loadStats();
+                    await loadIOCs();
+                } else {
+                    showMessage('Refresh failed: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showMessage('Refresh error: ' + error.message, 'error');
+            }
+        }
+        
+        function showMessage(message, type) {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => messagesDiv.innerHTML = '', 5000);
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadIOCs();
+        });
+    </script>
+</body>
+</html>
