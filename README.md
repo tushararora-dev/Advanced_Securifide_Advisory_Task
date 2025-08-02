@@ -76,10 +76,6 @@ python run.py
 ---
 
 ## 📈 Optional Enhancements
-
-- [ ] Export IOCs to CSV
-- [ ] Add ML classifier for suspicious URLs
-- [ ] Use Celery for async background jobs
 - [ ] Replace JSON with MongoDB or Elasticsearch
 - [ ] Add charts with Chart.js / ECharts
 
